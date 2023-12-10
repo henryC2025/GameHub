@@ -1,0 +1,57 @@
+.custom-bg-color 
+{
+    background-color: #4900CD;
+}
+
+.button.custom-bg-color 
+{
+    background-color: #4900CD;
+}
+
+.header 
+{
+    font-family: 'Segoe UI', 'Tahoma', 'Geneva', 'Verdana', 'sans-serif';
+    font-size: 2em;
+    color: white;
+    font-weight: 100;
+    letter-spacing: 0.5em;
+}
+
+#gameSummary
+{
+    color: black;
+}
+
+#gameName
+{
+    color: black;
+}
+
+#gameRating
+{
+    color: black;
+}
+
+#gameRating
+{
+    color: black;
+}
+
+.image-container {
+    height: 300px; /* Set the desired height */
+    width: 100%;   /* Set the width to 100% for responsiveness */
+    overflow: hidden; /* Hide any overflow if the image exceeds the container size */
+}
+
+.card-img-top {
+    object-fit: cover; /* Maintain aspect ratio and cover the container */
+    height: 100%;      /* Fill the entire height of the container */
+    width: 100%;       /* Fill the entire width of the container */
+}
+
+.card-header {
+    background-color: #007bff; /* Set the background color */
+    color: #fff; /* Set the text color */
+    padding: 10px; /* Add some padding for better spacing */
+    font-weight: bold; /* Optionally, make the text bold */
+}
