@@ -17,41 +17,194 @@
     letter-spacing: 0.5em;
 }
 
-#gameSummary
+.image-container 
 {
-    color: black;
+    height: 250px; 
+    width: 100%;   
+    overflow: hidden;
 }
 
-#gameName
+.card-img-top 
 {
-    color: black;
+    object-fit: cover; 
+    height: 100%;      
+    width: 100%;     
 }
 
-#gameRating
+.card-header 
 {
-    color: black;
+    background-color: #4900CD; 
+    color: #fff; 
+    padding: 10px; 
+    font-weight: bold; 
 }
 
-#gameRating
+#card_body
 {
-    color: black;
+    background: linear-gradient(to right, #1a1a1a, #4900CD);
+}
+
+#card_footer
+{
+    background: linear-gradient(to right, #1a1a1a, #4900CD);
+}
+
+/* Gaming colour classes */
+#platform-ps4 
+{
+    background: linear-gradient(to right, #0072ff, #00c6ff);
+}
+  
+#platform-xbox 
+{
+    background: linear-gradient(to right, #00ff00, #00cc00);
+}
+  
+#platform-pc 
+{
+    background: linear-gradient(to right, #ff8c00, #ffa500);
+}
+  
+#platform-switch 
+{
+    background: linear-gradient(to right, #ff0000, #ff4500);
+}
+
+#platform-64 
+{
+    background: linear-gradient(to right, #b22222, #dc143c);
+}
+  
+#platform-dreamcast 
+{
+    background: linear-gradient(to right, #008080, #00ced1);
+}
+  
+#platform-gamecube 
+{
+    background: linear-gradient(to right, #4b8a39, #6bbe6c);
+}
+
+#platform-ds
+{
+    background: linear-gradient(to right, #676767, #333333);
+}
+
+#platform-3ds
+{
+    background: linear-gradient(to right, #00bcd4, #008ba3);
+}
+
+#platform-gameboy
+{
+    background: linear-gradient(to right, #AED581, #8BC34A);
+}
+
+#platform-wii
+{
+    background: linear-gradient(to right, #54c9ff, #b3e0f2);
 }
 
 .image-container {
-    height: 300px; /* Set the desired height */
-    width: 100%;   /* Set the width to 100% for responsiveness */
-    overflow: hidden; /* Hide any overflow if the image exceeds the container size */
+    width: 100%;
+    height: 300px;
+    overflow: hidden;
+    position: relative;
+    display: inline-block;
 }
 
-.card-img-top {
-    object-fit: cover; /* Maintain aspect ratio and cover the container */
-    height: 100%;      /* Fill the entire height of the container */
-    width: 100%;       /* Fill the entire width of the container */
+.image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
 }
 
-.card-header {
-    background-color: #007bff; /* Set the background color */
-    color: #fff; /* Set the text color */
-    padding: 10px; /* Add some padding for better spacing */
-    font-weight: bold; /* Optionally, make the text bold */
+.custom-image-size 
+{
+    width: 100%; 
+    height: 500px; 
+}
+
+.overlay 
+{
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 80%; 
+    background-color: rgba(73, 0, 205, 0.5);
+    overflow: hidden;
+}
+
+.text 
+{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white; 
+    padding: 20px; 
+}
+
+
+#gameName
+{
+    font-weight: 450;
+    font-size: x-large;
+    text-transform: uppercase;
+    margin-bottom: 1%;
+}
+
+#gameSummary
+{
+    color: white;
+    font-weight: 300;
+    font-size: small;
+    padding-left: 20px;
+    border-right: 1px solid #ccc;
+}
+
+#gameDetails
+{
+    font-weight: 300;
+}
+
+#gameRating
+{
+    font-weight: 700;
+    font-size: 80px;
+
+}
+
+#gamesDetails
+{
+    font-weight: 300;
+    font-size: small;
+}
+
+#gamesName
+{
+    color: white;
+    font-weight: 450;
+    font-size: medium;
+    text-transform: uppercase;
+}
+
+#gamesRating
+{
+    color: white;
+    font-weight: 300;
+    font-size: larger;
+    text-transform: uppercase;
+}
+
+.truncate-text 
+{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card {
+    height: 100% !important; /* Set a fixed height for the card */
 }

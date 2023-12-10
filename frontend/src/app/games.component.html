@@ -1,40 +1,40 @@
-<div class="container" style="margin-top: 20%;">
+<div class="container" style="margin-top: 10%;">
     <div class="row">
-        <div *ngFor = "let game of game_list | async" class="col-md-6 mb-4">
-            <div class="custom-bg-color">
+        <div *ngFor = "let game of game_list | async" class="col-md-3 mb-4">
+            <div>
                 <!-- Background colour and link to single game -->
                 <div class="card text-white custom-bg-color mb-3" 
                     style="cursor: pointer;" 
                     [routerLink]="['/games', game._id]">
             
                 <!-- Header for card -->
-                <div class="card-header">
-                    <div id="gameName">
-                        {{game.name}} - {{game.platform}}
+                <div class="card-header" id="{{getPlatformClass(game.platform)}}">
+                    <div id="gamesName" class="truncate-text">
+                      {{game.name}} - {{game.platform}}
                     </div>
-
-                    <!-- <div class="gamePlatform">
-                        Platform: {{game.platform}}
-                    </div> -->
-                </div>
+                </div>  
 
                 <!-- Large Image -->
                 <div class="image-container">
-                    <img [src]="game.image_url" class="card-img-top" alt="{{game.name}}">
+                    <img [src]="game.image_url" class="img-thumbnail rounded-0" alt="{{game.name}}">
                 </div>
 
 
                 <!-- Body for card -->
-                <div class="card-body">
-                    <div id="gameRating">
-                        Rating: {{game.user_review}}
+                <!-- <div class="card-body" id="card_body">
+                </div> -->
+                
+                <!-- Footer for card -->
+                <div class="card-footer" id="card_footer">
+                    <div class="col-md-6" id="gamesDetails">
+                        <p>Release Date: {{game.release_date}}</p>
+                    </div>
+    
+                    <!-- Second Column: User Review -->
+                    <div class="col-md-6" id="gamesDetails">
+                        <p>Rating: {{game.user_review}}</p>
                     </div>
                 </div>
-                
-                <!-- Footer for card
-                <div class="card-footer">
-                    
-                </div> -->
             </div>
         </div>
     </div>

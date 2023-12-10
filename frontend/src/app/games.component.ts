@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
 import { WebService } from "./web.service";
+import { SharedService } from "./shared.service";
 
 @Component({
     selector: 'games',
@@ -9,7 +10,8 @@ import { WebService } from "./web.service";
 
 export class GamesComponent
 {
-    constructor(public webService : WebService) {}
+    constructor(public webService : WebService, 
+                public sharedService : SharedService) {}
 
     ngOnInit()
     {
@@ -37,6 +39,12 @@ export class GamesComponent
         sessionStorage['page'] = this.page;
         this.game_list =
             this.webService.getGames(this.page);
+    }
+
+    getPlatformClass(platform: string): string 
+    {
+        const platformClass = this.sharedService.getPlatformClass(platform);
+        return platformClass;
     }
 
     game_list : any = [];

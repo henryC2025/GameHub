@@ -12,6 +12,7 @@ import { NavComponent } from './nav.component';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AuthModule } from '@auth0/auth0-angular';
+import { SharedService } from './shared.service';
 
 var routes : any = [
   {
@@ -50,7 +51,7 @@ var routes : any = [
       }
     })
   ],
-  providers: [WebService],
+  providers: [WebService, SharedService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -94,7 +94,7 @@ def hello_world():
 @app.route('/api/v1.0/games', methods=['GET'])
 def get_all_games():
 
-    page_num, page_size = 1, 10
+    page_num, page_size = 1, 12
     if request.args.get('pn'): 
         page_num = int(request.args.get('pn'))
     if request.args.get('ps'):
@@ -121,7 +121,7 @@ def get_game_by_id(id):
         for comment in video_game.get('comments', []):
             comment['_comment_id'] = str(comment['_comment_id'])
 
-        return make_response(jsonify(video_game), 200)
+        return make_response(jsonify([video_game]), 200)
     else:
         return make_response(jsonify({'message': 'Game not found'}), 404)
 
@@ -138,6 +138,8 @@ def search_games():
     matching_games_list = []
     for game in matching_games:
         game['_id'] = str(game['_id']) 
+        for comment in game.get('comments', []):
+            comment['_comment_id'] = str(comment['_comment_id'])
         matching_games_list.append(game)
 
     return make_response(jsonify(matching_games_list), 200)

@@ -23,17 +23,19 @@ def get_game_cover(api_key, game_name):
     return None
 
 def updateImages():
-    for document in collection.find({"image_url": "your_default_image_url"}):
+    default_image_url = "https://cdn.pixabay.com/photo/2016/10/30/23/05/controller-1784573_1280.png"
+    api_key = 'f198f7794178443292bcb8e9668da05e'
+
+    for document in collection.find({"$or": [{"image_url": None}, {"image_url": ""}]}):
         game_name = document['name']
-        api_key = 'f198f7794178443292bcb8e9668da05e'
+        image_url = document['image_url']
 
-        image_url = get_game_cover(api_key, game_name)
+        if image_url is None or image_url == "":
+            image_url = get_game_cover(api_key, game_name) or default_image_url
 
-        collection.update_many(
-            {'name': game_name, 'image_url': 'your_default_image_url'},
-            {'$set': {'image_url': image_url}}
-        )
-
-    print("Image URLs updated for selected games.")
+            collection.update_many(
+                {'name': game_name, 'image_url': {"$in": [None, ""]}},
+                {'$set': {'image_url': image_url}}
+            )
 
 updateImages()

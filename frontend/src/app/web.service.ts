@@ -18,7 +18,8 @@ export class WebService
 
     getGame(id : any)
     {
-        return
+        this.game_id = id;
+        return this.http.get("http://localhost:5000/api/v1.0/games/" + id)
     }
 
     getComments(id : any)
