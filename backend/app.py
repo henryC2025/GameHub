@@ -111,6 +111,13 @@ def get_all_games():
 
     return make_response(jsonify(video_games_list), 200)
 
+# Get count of games
+@app.route('/api/v1.0/games/count', methods=['GET'])
+def get_count_of_games():
+    count_of_games = db.video_games.distinct("_id")
+
+    return f"{len(count_of_games)}"
+
 # Get a game by id
 @app.route('/api/v1.0/games/<string:id>', methods=['GET'])
 def get_game_by_id(id):
@@ -128,6 +135,7 @@ def get_game_by_id(id):
 # Search games by name
 @app.route('/api/v1.0/games/search', methods=['GET'])
 def search_games():
+
     query = request.args.get('query', '')
 
     regex_pattern = f'.*{query}.*'

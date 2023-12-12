@@ -1,56 +1,74 @@
 <div class="container" style="margin-top: 10%;">
     <div class="row">
-        <div *ngFor = "let game of game_list | async" class="col-md-3 mb-4">
-            <div>
+
+        <div class="input-group mb-3" id="search-button">
+            <input type="text" class="form-control" placeholder="Search for games" [(ngModel)]="search_query" (input)="search()">
+        </div>        
+              
+            <!-- Display search results -->
+            <div *ngFor= "let game of (search_query ? search_results : game_list | async)" class="col-md-3 mb-4">
+
                 <!-- Background colour and link to single game -->
                 <div class="card text-white custom-bg-color mb-3" 
-                    style="cursor: pointer;" 
+                    style="cursor: pointer;"  id="games-card"
                     [routerLink]="['/games', game._id]">
             
                 <!-- Header for card -->
                 <div class="card-header" id="{{getPlatformClass(game.platform)}}">
-                    <div id="gamesName" class="truncate-text">
+
+                    <div id="games-name" class="truncate-text">
                       {{game.name}} - {{game.platform}}
                     </div>
+
                 </div>  
 
                 <!-- Large Image -->
                 <div class="image-container">
                     <img [src]="game.image_url" class="img-thumbnail rounded-0" alt="{{game.name}}">
                 </div>
-
-
-                <!-- Body for card -->
-                <!-- <div class="card-body" id="card_body">
-                </div> -->
                 
                 <!-- Footer for card -->
-                <div class="card-footer" id="card_footer">
-                    <div class="col-md-6" id="gamesDetails">
+                <div class="card-footer" id="card-footer">
+                    <div class="col-md-10" id="games-details">
                         <p>Release Date: {{game.release_date}}</p>
                     </div>
     
                     <!-- Second Column: User Review -->
-                    <div class="col-md-6" id="gamesDetails">
+                    <div class="col-md-10" id="games-details">
                         <p>Rating: {{game.user_review}}</p>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-        <!-- Pagination -->
-        <div class="row">
-            <div class="col-sm-6">
-                <button class="btn custom-bg-color"
-                    (click)="previousPage()">Previous
-                </button>
-            </div>
+                </div> <!-- End of footer -->
+                </div> <!-- End of card -->
+            </div> <!-- End of ng -->
+    </div> <!-- End of row -->
+
+    <!-- Pagination -->
+    <nav aria-label="Page navigation" class="d-flex justify-content-center" id="page-navigation" *ngIf="!search_query">
+        <ul class="pagination">
+
+            <li class="page-item">
+                <button class="page-link" (click)="firstPage()">First</button>
+            </li>
+
+            <li class="page-item">
+                <button class="page-link" (click)="previousPage()" [disabled]="page === 1">{{"\<"}}</button>
+            </li>
             
-            <div class="col-sm-6 text-end">
-                <button class="btn custom-bg-color"
-                    (click)="nextPage()">Next
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
+            <ng-container *ngFor="let pageNum of [page - 2, page - 1, page, page + 1, page + 2]">
+                <li class="page-item" *ngIf="pageNum > 0 && pageNum <= total_pages" [class.active]="pageNum === page">
+                    <button class="page-link" (click)="goToPage(pageNum)">{{pageNum}}</button>
+                </li>
+            </ng-container>                  
+
+            <li class="page-item">
+                <button class="page-link" (click)="nextPage()">{{"\>"}}</button>
+            </li>
+
+            <li class="page-item">
+                <button class="page-link" (click)="lastPage()">Last</button>
+            </li>
+        </ul>
+    </nav>
+    <!-- End of Pagination -->
+
+</div> <!-- End of container -->

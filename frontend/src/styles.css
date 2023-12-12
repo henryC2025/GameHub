@@ -39,12 +39,12 @@
     font-weight: bold; 
 }
 
-#card_body
+#card-body
 {
     background: linear-gradient(to right, #1a1a1a, #4900CD);
 }
 
-#card_footer
+#card-footer
 {
     background: linear-gradient(to right, #1a1a1a, #4900CD);
 }
@@ -117,6 +117,7 @@
     width: 100%;
     height: 100%;
     object-fit: cover; 
+    position: relative;
 }
 
 .custom-image-size 
@@ -125,6 +126,21 @@
     height: 500px; 
 }
 
+.green-overlay 
+{
+    background-color: rgba(75, 205, 0, 0.5);
+}
+  
+.red-overlay 
+{
+    background-color: rgba(205, 0, 0, 0.5);
+}
+  
+.orange-overlay 
+{
+    background-color: rgba(205, 167, 0, 0.5);
+}
+  
 .overlay 
 {
     position: absolute;
@@ -132,7 +148,6 @@
     right: 0;
     bottom: 0;
     left: 80%; 
-    background-color: rgba(73, 0, 205, 0.5);
     overflow: hidden;
 }
 
@@ -147,42 +162,42 @@
 }
 
 
-#gameName
+#game-name
 {
-    font-weight: 450;
+    font-weight: 600;
     font-size: x-large;
     text-transform: uppercase;
     margin-bottom: 1%;
 }
 
-#gameSummary
+#game-summary
 {
     color: white;
     font-weight: 300;
     font-size: small;
     padding-left: 20px;
-    border-right: 1px solid #ccc;
+    border-right: 1px solid rgba(222, 226, 230, 0.25);
 }
 
-#gameDetails
+#game-details
 {
     font-weight: 300;
 }
 
-#gameRating
+#game-rating
 {
     font-weight: 700;
     font-size: 80px;
 
 }
 
-#gamesDetails
+#games-details
 {
     font-weight: 300;
     font-size: small;
 }
 
-#gamesName
+#games-name
 {
     color: white;
     font-weight: 450;
@@ -190,7 +205,7 @@
     text-transform: uppercase;
 }
 
-#gamesRating
+#games-rating
 {
     color: white;
     font-weight: 300;
@@ -198,13 +213,122 @@
     text-transform: uppercase;
 }
 
+#games-card 
+{
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease-in-out;
+}
+  
+#games-card:hover 
+{
+    transform: scale(1.05);
+}
+  
 .truncate-text 
 {
-    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-.card {
-    height: 100% !important; /* Set a fixed height for the card */
+#nav-buttons
+{
+    background-color: #4900CD;
+    color: white;
+}
+
+#comment-header
+{
+    background-color: #1a1a1a;
+    color: white;
+    font-weight: 300;
+    font-size: x-large;
+}
+
+#comment-text
+{
+    color: white;
+    font-weight: 300;
+    font-size: medium;
+    padding-left: 20px;
+}
+
+#comment-username
+{
+    color: white;
+    font-weight: 700;
+    font-size: large;
+    text-transform: uppercase;
+}
+
+#comment-date
+{
+    color: white;
+    font-weight: 300;
+    font-size: large;
+    text-transform: uppercase;
+}
+
+#comment-title
+{
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+#comment-details
+{
+    border-right: 1px solid rgba(222, 226, 230, 0.25);
+}
+
+#comment-input
+{
+    border-radius: 0;
+}
+
+#comment-button
+{
+    border-radius: 0;
+    border: 0;
+    background-color: #4900CD;
+    transition: background-color 0.3s ease; 
+}
+
+#comment-button:hover 
+{
+    background-color: #333333; 
+}
+
+#logout-comment
+{
+    font-weight: 300;
+    font-size: x-large;
+}
+
+.page-item.active .page-link 
+{
+    background-color: #4900CD;
+    border-color: #4900CD;
+    color: #ffffff !important;
+}
+
+.page-link 
+{
+    color: black !important;
+}
+
+.page-link:hover 
+{
+    color: #333333; 
+}
+
+.page-item.disabled .page-link 
+{
+    color: #6c757d; 
+    pointer-events: none; 
+}
+
+#page-navigation
+{
+    
 }
