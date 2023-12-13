@@ -1,33 +1,64 @@
-// auth.component.ts
 import { Component } from '@angular/core';
 import { AuthService } from '@auth0/auth0-angular';
-import {Auth0Lock} from 'auth0-lock';
+import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-auth',
-  templateUrl: './auth.component.html',
-  styleUrls: ['auth.component.css']
+  selector : 'auth',
+  templateUrl : 'auth.component.html',
+  styleUrls : ['auth.component.css']
 })
-export class AuthComponent {
 
-  lock = new Auth0Lock('YOUR_AUTH0_CLIENT_ID', 'YOUR_AUTH0_DOMAIN');
+export class AuthComponent 
+{
 
-  constructor(public auth: AuthService) {}
+  constructor(public authService: AuthService,
+              public router: Router) {}
 
-  login() {
-    // Customize the login options as needed
-    const options = {
-      allowSignUp: true, // Enable registration
-      // Other options...
-    };
-
-    this.lock.show(options, (err, profile, token) => {
-      if (err) {
-        console.error(err);
-        return;
+  ngOnInit()
+  {
+    this.authService.isAuthenticated$.subscribe((isAuthenticated) => 
+    {
+      if (isAuthenticated)
+      {
+        this.onRedirectComplete();
       }
-      // Handle successful login
     });
+
+    this.authService.user$.subscribe((user) => 
+        {
+          if (user)
+          {
+            const userData = 
+            {
+              oauth_id: user.sub,
+              username: user.nickname,
+              email: user.email,
+            };
+
+            console.log(userData)
+          }
+          else
+          {
+            console.log("Something went wrong!")
+          }
+        });
   }
   
+  loginWithRedirect(): void
+  {
+    this.authService.loginWithRedirect(
+    {
+        appState: { target: this.router.url }
+    })
+  }
+
+  onRedirectComplete(): void
+  {
+    console.log("hi")
+  }
+
+  logout(): void
+  {
+    this.authService.logout();
+  }
 }

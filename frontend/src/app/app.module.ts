@@ -13,6 +13,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthModule } from '@auth0/auth0-angular';
 import { SharedService } from './shared.service';
+import { AuthComponent } from './auth.component';
 
 var routes : any = [
   {
@@ -35,7 +36,8 @@ var routes : any = [
     GameComponent,
     GamesComponent,
     HomeComponent,
-    NavComponent
+    NavComponent, 
+    AuthComponent
   ],
   imports: [
     BrowserModule,

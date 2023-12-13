@@ -51,7 +51,7 @@ export class GameComponent
             const userInfo = 
             {
               user_id: user.sub,
-              username: user.name,
+              username: user.nickname,
               comment: this.commentForm.get('comment').value
             };
 

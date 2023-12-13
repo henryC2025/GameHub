@@ -25,17 +25,7 @@
 
     <!-- Login / Logout buttons -->
     <div class="form-inline ms-auto" style="margin-right: 10px;">
-        <ng-container *ngIf = "authService.isAuthenticated$ | async; else loggedOut">
-            <button class="btn btn-outline-light" (click) = "authService.loginWithRedirect({
-                appState : {target: this.router.url}
-            })">Logout</button>
-        </ng-container>
-
-        <ng-template #loggedOut>
-            <button class="btn btn-outline-light" (click) = "authService.loginWithRedirect({
-                appState : {target: this.router.url}
-            })">Login</button>
-        </ng-template>
-
+        <auth></auth>
     </div>
+
 </nav>

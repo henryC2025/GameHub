@@ -7,6 +7,7 @@ import jwt
 import bcrypt
 from functools import wraps
 from flask_cors import CORS
+from bson import json_util
 
 app = Flask(__name__)
 CORS(app)
@@ -85,6 +86,58 @@ def login():
             return make_response(jsonify({'message' : 'Bad username'}), 401)
 
     return make_response(jsonify({'Message' : 'Authentication required'}), 401)
+
+@app.route('/api/v1.0/register', methods=['POST'])
+def addAuthUser():
+
+    _id = ObjectId()
+    oauth_id = request.form['oauth_id']
+    username = request.form['username']
+    email = request.form['email']
+    timestamp = datetime.datetime.utcnow()
+
+    if oauth_id and email:
+
+        user = users.find_one({'$or': [{'oauth_id': oauth_id}, {'email': email}]})
+
+        if not user:
+            new_user = {
+                '_id' : _id,
+                'oauth_id' : oauth_id,
+                'username': username,
+                'email': email,
+                'datetime': timestamp
+            }
+            users.insert_one(new_user)
+
+            return make_response(jsonify({"user_id" : str(_id)}), 201)
+        else:
+            return
+
+@app.route('/api/v1.0/users', methods=['GET'])
+def get_all_users():
+    user_list = []
+
+    for user in db.users.find():
+        user['_id'] = str(user['_id'])
+
+        for key, value in user.items():
+            if isinstance(value, bytes):
+                user[key] = value.decode('utf-8')
+
+        user_list.append(user)
+
+    return make_response(jsonify([user_list]), 200)
+
+@app.route('/api/v1.0/users/<string : id>', methods=['DELETE'])
+def delete_user(user_id):
+    user = users.find_one({'_id': ObjectId(user_id)})
+
+    if user:
+        users.delete_one({'_id': ObjectId(user_id)})
+        return make_response(jsonify({"message": "User deleted successfully"}), 200)
+    else:
+        return make_response(jsonify({"error": "User not found"}), 404)
 
 @app.route('/')
 def hello_world():
