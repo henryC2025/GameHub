@@ -328,7 +328,54 @@
     pointer-events: none; 
 }
 
-#page-navigation
+/* like-dislike.component.css */
+
+.like-dislike-container
 {
-    
+    display: flex;
+    align-items: center;
+}
+  
+button
+{
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+}
+  
+button i
+{
+    margin-right: 5px;
+    font-size: large;
+}
+  
+.like-button
+{
+    color: #333333;
+}
+  
+.dislike-button
+{
+    color: #333333;
+}
+
+button:hover
+{
+    color: #4900CD;
+}
+
+.like-dislike-count
+{
+    font-size: large;
+}
+
+.divider
+{
+    height: 30px;
+    width: 1px;
+    background-color: #ccc;
+    margin: 0 10px;
 }
