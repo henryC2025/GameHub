@@ -44,34 +44,43 @@ export class GameComponent
 
     submitComment(): void 
     {
-        this.authService.user$.subscribe((user) => 
+        this.authService.user$.subscribe((user) =>
         {
-          if (user) 
+          if (user)
           {
-            const userInfo = 
+            const userInfo =
             {
-              user_id: user.sub,
+              user_id: this.sharedService.getUserId(),
               username: user.nickname,
               comment: this.commentForm.get('comment').value
             };
 
             console.log(userInfo)
       
-            // this.webService.addComment(userInfo).subscribe(
-            //   (response) => {
-            //     console.log('User information sent successfully:', response);
-            //   },
-            //   (error) => {
-            //     console.error('Error sending user information:', error);
-            //   }
-            // );
+            this.webService.addComment(userInfo).subscribe({
+              next: (response) =>
+              {
+                console.log('Comment added successfully:', response);
+                
+                window.alert("Comment added sucessfully")
+
+                this.comments = this.webService
+                  .getComments(this.route.snapshot.params['id']
+                );
+              },
+              error: (error) =>
+              {
+                console.error('Error sending user information:', error);
+              }}
+            );
           }
         });
     }
 
     ngOnInit()
     {
-        this.commentForm = this.formBuilder.group({
+        this.commentForm = this.formBuilder.group(
+        {
             comment: ['', Validators.required]
         })
 
@@ -80,8 +89,11 @@ export class GameComponent
         );
 
         this.comments = this.webService
-            .getComments(this.route.snapshot.params['id']
+          .getComments(this.route.snapshot.params['id']
         );
+
+        console.log("Game list: " + this.game_list)
+        console.log("Comment list: " + this.comments)
     }
 
     getPlatformClass(platform: string): string 

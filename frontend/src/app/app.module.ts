@@ -14,6 +14,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthModule } from '@auth0/auth0-angular';
 import { SharedService } from './shared.service';
 import { AuthComponent } from './auth.component';
+import { ProfileComponent } from './profile.component';
+import { AuthGuard } from '@auth0/auth0-angular';
 
 var routes : any = [
   {
@@ -27,6 +29,10 @@ var routes : any = [
   {
     path: 'games/:id',
     component: GameComponent
+  },
+  {
+    path: 'profile',
+    component: ProfileComponent
   }
 ]
 
@@ -37,7 +43,8 @@ var routes : any = [
     GamesComponent,
     HomeComponent,
     NavComponent, 
-    AuthComponent
+    AuthComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,
@@ -54,7 +61,7 @@ var routes : any = [
       }
     })
   ],
-  providers: [WebService, SharedService],
+  providers: [WebService, SharedService, AuthGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -58,49 +58,21 @@ def jwt_required(func):
     
     return jwt_required_wrapper
 
-@app.route('/api/v1.0/logout', methods=["GET"])
-@jwt_required
-def logout():
-    token = request.headers['x-access-token']
-    blacklist.insert_one({"token" : token})
-    return make_response(jsonify({'message' : 'Logout sucessful'}), 200)
+@app.route('/api/v1.0/auth', methods=['POST'])
+def authUser():
 
-@app.route('/api/v1.0/login', methods=['GET'])
-def login():
-    auth = request.authorization
-
-    if auth: 
-        user = users.find_one({'username' : auth.username})
-        if user is not None:
-            if bcrypt.checkpw(bytes(auth.password, 'UTF-8'), user["password"]):
-                token = jwt.encode(
-                {
-                    'user' : auth.username,
-                    'admin' : user["admin"],
-                    'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=30)
-                }, app.config['SECRET_KEY'])
-                return make_response(jsonify({'token' : token.decode('UTF-8')}), 200)
-            else:
-                return make_response(jsonify({'message' : 'Bad password'}), 401)
-        else:
-            return make_response(jsonify({'message' : 'Bad username'}), 401)
-
-    return make_response(jsonify({'Message' : 'Authentication required'}), 401)
-
-@app.route('/api/v1.0/register', methods=['POST'])
-def addAuthUser():
-
-    _id = ObjectId()
     oauth_id = request.form['oauth_id']
     username = request.form['username']
     email = request.form['email']
-    timestamp = datetime.datetime.utcnow()
 
     if oauth_id and email:
 
         user = users.find_one({'$or': [{'oauth_id': oauth_id}, {'email': email}]})
 
         if not user:
+            _id = ObjectId()
+            timestamp = datetime.datetime.utcnow()
+
             new_user = {
                 '_id' : _id,
                 'oauth_id' : oauth_id,
@@ -110,9 +82,19 @@ def addAuthUser():
             }
             users.insert_one(new_user)
 
-            return make_response(jsonify({"user_id" : str(_id)}), 201)
+            return make_response(jsonify({"Registered new user_id" : str(_id)}), 201)
         else:
-            return
+            user_id = get_user_id_by_oauth_id(oauth_id)
+
+            return make_response(jsonify({"user_id" : user_id}), 201)
+        
+def get_user_id_by_oauth_id(oauth_id):
+    user = users.find_one({'oauth_id': oauth_id})
+
+    if user:
+        return str(user['_id'])
+    else:
+        return "No user found!"
 
 @app.route('/api/v1.0/users', methods=['GET'])
 def get_all_users():
@@ -129,12 +111,12 @@ def get_all_users():
 
     return make_response(jsonify([user_list]), 200)
 
-@app.route('/api/v1.0/users/<string : id>', methods=['DELETE'])
-def delete_user(user_id):
-    user = users.find_one({'_id': ObjectId(user_id)})
+@app.route('/api/v1.0/users/<string:id>', methods=['DELETE'])
+def delete_user(id):
+    user = users.find_one({'_id': ObjectId(id)})
 
     if user:
-        users.delete_one({'_id': ObjectId(user_id)})
+        users.delete_one({'_id': ObjectId(id)})
         return make_response(jsonify({"message": "User deleted successfully"}), 200)
     else:
         return make_response(jsonify({"error": "User not found"}), 404)
@@ -211,17 +193,18 @@ def add_comment(game_id):
     comment_id = ObjectId()
     timestamp = datetime.datetime.utcnow()
 
-    user_id = request.form['userID']
+    user_id = request.form['user_id']
     username = request.form['username']
     comment_text = request.form['comment']
 
     if username and comment_text:
         new_comment = {
             'user_id' : user_id,
+            'game_id' : game_id,
             'username': username,
             '_comment_id': comment_id,
-            'comment_text': comment_text,
             'datetime': timestamp,
+            'comment_text': comment_text,
         }
 
         collection.update_one(
@@ -294,7 +277,7 @@ def get_game_comments(game_id):
         for comment in comments:
             comment['_comment_id'] = str(comment['_comment_id'])
 
-        return make_response(jsonify({'comments': comments}), 200)
+        return make_response(jsonify(comments), 200)
     else:
         return make_response(jsonify({'error_message': 'Game not found'}), 404)
 
@@ -302,19 +285,18 @@ def get_game_comments(game_id):
 # Get all comments from user
 @app.route('/api/v1.0/users/<string:user_id>/comments', methods=['GET'])
 def get_user_comments(user_id):
+    games = collection.find({'comments.user_id': user_id})
 
-    game = collection.find_one({'comments.user_id' : user_id})
+    all_user_comments = []
+    for game in games:
+        game_id = str(game['_id'])
+        comments = game.get('comments')
+        for comment in comments:
+            comment['_comment_id'] = str(comment['_comment_id'])
+            comment['game_id'] = game_id
+            all_user_comments.append(comment)
 
-    comments = []
-    if game:
-        for comment in game.get('comments', []):
-            if comment['user_id'] == user_id:
-                comments['_comment_id'] = str(comments['_comment_id'])
-                comments.append(comment)
-    else:
-        return make_response(jsonify({'error_message' : 'Game not found'}), 404)
-    
-    return make_response(jsonify({'comments' : comments}), 200)
+    return make_response(jsonify(all_user_comments), 200)
 
 # Add like to a game
 @app.route('/api/v1.0/games/<string:game_id>/likes_dislikes/likes', methods=['POST'])

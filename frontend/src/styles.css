@@ -379,3 +379,80 @@ button:hover
     background-color: #ccc;
     margin: 0 10px;
 }
+
+#comment-username-heading
+{
+    padding: 10px;
+    background-color: rgba(73, 0, 205, 0.7);
+    text-transform: uppercase;
+    font-weight: 500;
+    color: #1a1a1a;
+}
+
+#profile-nickname
+{
+    font-size: large;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    padding: 10px;
+    background-color: rgba(73, 0, 205, 0.7);
+    text-transform: uppercase;
+    font-weight: 500;
+    color: #1a1a1a;
+}
+
+#profile-email
+{
+    font-size: large;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    padding: 10px;
+    background-color: rgba(73, 0, 205, 0.7);
+    text-transform: uppercase;
+    font-weight: 500;
+    color: #1a1a1a;
+}
+
+#profile-sub
+{
+    font-size: large;
+    padding: 10px;
+    background-color: rgba(73, 0, 205, 0.7);
+    text-transform: uppercase;
+    font-weight: 500;
+    color: #1a1a1a;
+}
+
+#profile-userid
+{
+    font-size: large;
+    padding: 10px;
+    background-color: rgba(73, 0, 205, 0.7);
+    text-transform: uppercase;
+    font-weight: 500;
+    color: #1a1a1a;
+}
+
+#comment-edit
+{
+    background-color: white;
+    color: black;
+    transition: transform 0.3s ease-in-out;
+}
+
+#comment-delete
+{
+    background-color: white;
+    color: black;
+    transition: transform 0.3s ease-in-out;
+}
+
+#comment-game
+{
+    transition: transform 0.3s ease-in-out;
+}
+  
+#comment-edit:hover, #comment-delete:hover, #comment-game:hover
+{
+    transform: scale(1.05);
+}

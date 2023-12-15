@@ -1,0 +1,100 @@
+<div class="container" style="margin-top: 10%;">
+
+    <div>
+
+        <H1>User Profile</H1>
+        <hr>
+
+        <div *ngIf="authService.user$ | async as user">
+            <h3 id="profile-nickname">Username - {{ user.nickname }}</h3>
+            <h3 id="profile-sub">AuthID - {{ user.sub }}</h3>
+            <h3 id="profile-userid">UserID - {{ this.sharedService.getUserId() }}</h3>
+            <h3 id="profile-email">Email - {{ user.email }}</h3>
+        </div>
+
+    </div>
+
+    <div>
+
+        <H1>Comments</H1>
+        <hr>
+
+        <div *ngIf="isAuthenticated"> 
+
+            <div *ngFor="let comment of comments | async">
+                <div class="card mt-3">
+                  <div class="card-body" id="card-body">
+                    
+                    <div class="row">
+                        <!-- Display comment details here -->
+                        <div class="col-md-4" id="comment-details">
+                            <p id="comment-date" class="text-white">{{ comment.datetime }}</p>
+                        </div>
+                
+                        <div class="col-md-5" id="comment-text-area">
+                            <p id="comment-text" class="text-white">{{ comment.comment_text }}</p>
+                        </div>
+                        
+                        <!-- (click)="editComment(comment._comment_id)" -->
+                        <!-- Delete button -->
+                    </div>
+    
+                  </div>
+                  <div class="card-footer" style="background-color: rgba(73, 0, 205, 0.7);">
+                    <div class="row">
+    
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-primary" id="comment-edit"
+                                (click)="editComment(comment.game_id, comment._comment_id)">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                        
+                            <button class="btn btn-danger" id="comment-delete"
+                                (click)="deleteComment(comment.game_id, comment._comment_id)">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        
+                            <button class="btn btn-info" style="cursor: pointer;"
+                            [routerLink]="['/games', comment.game_id]" id="comment-game">
+                                <i class="fas fa-gamepad"></i> Go To Game
+                            </button>
+                        </div>                    
+                    
+                    </div>
+                </div>
+                </div>
+              </div>
+              
+        </div>
+
+        </div>
+
+    <div>
+
+        <H1>Likes</H1>
+        <hr>
+
+        <div *ngIf="authService.user$ | async as user">
+            <h3 id="profile-nickname">Username - {{ user.nickname }}</h3>
+            <h3 id="profile-sub">AuthID - {{ user.sub }}</h3>
+            <h3 id="profile-userid">UserID - {{ this.sharedService.getUserId() }}</h3>
+            <h3 id="profile-email">Email - {{ user.email }}</h3>
+        </div>
+
+    </div>
+
+    <div>
+
+        <H1>Dislikes</H1>
+        
+
+        <div *ngIf="authService.user$ | async as user">
+            <h3 id="profile-nickname">Username - {{ user.nickname }}</h3>
+            <h3 id="profile-sub">AuthID - {{ user.sub }}</h3>
+            <h3 id="profile-userid">UserID - {{ this.sharedService.getUserId() }}</h3>
+            <h3 id="profile-email">Email - {{ user.email }}</h3>
+        </div>
+
+    </div>
+
+</div>
