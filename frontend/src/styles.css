@@ -302,7 +302,8 @@
 #logout-comment
 {
     font-weight: 300;
-    font-size: x-large;
+    text-transform: uppercase;
+    font-size: large;
 }
 
 .page-item.active .page-link 
@@ -389,58 +390,28 @@ button:hover
     color: #1a1a1a;
 }
 
-#profile-nickname
+#profile-text
 {
     font-size: large;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    padding: 10px;
-    background-color: rgba(73, 0, 205, 0.7);
-    text-transform: uppercase;
+    padding: 5px;
     font-weight: 500;
-    color: #1a1a1a;
+    color: white;
 }
 
-#profile-email
+#profile-details
 {
-    font-size: large;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-    padding: 10px;
     background-color: rgba(73, 0, 205, 0.7);
-    text-transform: uppercase;
-    font-weight: 500;
-    color: #1a1a1a;
+    padding: 10px;
 }
 
-#profile-sub
-{
-    font-size: large;
-    padding: 10px;
-    background-color: rgba(73, 0, 205, 0.7);
-    text-transform: uppercase;
-    font-weight: 500;
-    color: #1a1a1a;
-}
-
-#profile-userid
-{
-    font-size: large;
-    padding: 10px;
-    background-color: rgba(73, 0, 205, 0.7);
-    text-transform: uppercase;
-    font-weight: 500;
-    color: #1a1a1a;
-}
-
-#comment-edit
+#comment-edit, #like-edit, #dislike-delete
 {
     background-color: white;
     color: black;
     transition: transform 0.3s ease-in-out;
 }
 
-#comment-delete
+#comment-delete, #like-delete, #dislike-delete
 {
     background-color: white;
     color: black;
@@ -453,6 +424,102 @@ button:hover
 }
   
 #comment-edit:hover, #comment-delete:hover, #comment-game:hover
+{
+    transform: scale(1.05);
+}
+
+#thumbs-up, #thumbs-down
+{
+    transition: transform 0.1s ease-in-out;
+}
+
+#thumbs-up:hover, #thumbs-down:hover
+{
+    transform: scale(1.05);
+}
+
+#profile-heading
+{
+    margin-top: 2%;
+}
+
+#like-dislike-template-message
+{
+    font-weight: 300;
+    text-transform: uppercase;
+    font-size: medium;
+}
+
+#liked-game-name, #disliked-game-name
+{
+    color: white;
+    font-size: xx-large;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+#card-body-like
+{
+    background: linear-gradient(to right, #1a1a1a, #00ff00);
+}
+
+#card-body-dislike
+{
+    background: linear-gradient(to right, #1a1a1a, #b22222);
+}
+
+#home-body
+{
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #1a1a1a;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    overflow: hidden;
+}
+  
+#home-container
+{
+    text-align: center;
+}
+  
+#home-heading
+{
+    font-size: 4em;
+    font-weight: 100;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    color: white;
+    letter-spacing: 0.1em;
+    opacity: 0;
+    animation: fadeInUp 1.5s forwards;
+}
+  
+@keyframes fadeInUp
+{
+    from
+    {
+      opacity: 0;
+      transform: translateY(50px);
+    }
+  
+    to
+    {
+      opacity: 1;
+      transform: translateY(0);
+    }
+}
+
+#home-icon
+{
+    transition: transform 0.1s ease-in-out;
+}
+
+#home-icon:hover
 {
     transform: scale(1.05);
 }

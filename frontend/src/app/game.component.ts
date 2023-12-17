@@ -16,8 +16,13 @@ export class GameComponent
     game_list : any = []
     comments : any = []
     commentForm : any = []
+    like_dislike_list : any = []
     username : any
     email : any
+    like_count : any = 0;
+    dislike_count : any = 0;
+    user_id : any;
+    public isAuthenticated: boolean = false;
  
     constructor(public webService : WebService,
                 public route : ActivatedRoute,
@@ -59,9 +64,7 @@ export class GameComponent
       
             this.webService.addComment(userInfo).subscribe({
               next: (response) =>
-              {
-                console.log('Comment added successfully:', response);
-                
+              {                
                 window.alert("Comment added sucessfully")
 
                 this.comments = this.webService
@@ -92,8 +95,28 @@ export class GameComponent
           .getComments(this.route.snapshot.params['id']
         );
 
-        console.log("Game list: " + this.game_list)
-        console.log("Comment list: " + this.comments)
+        this.like_dislike_list = this.webService
+          .getLikesDislikesFromGame(this.route.snapshot.params['id']
+        );
+
+        this.sharedService.authUserCompleted.subscribe(() =>
+        {
+            this.user_id = this.sharedService.getUserId();
+        });
+
+        this.authService.isAuthenticated$.subscribe((isAuthenticated) =>
+        {
+            if (isAuthenticated)
+            {
+              const user_id = this.sharedService.getUserId();
+              if(user_id)
+              {
+                this.user_id = user_id;
+              }
+            }
+        });
+
+        this.getLikesDislikes(this.route.snapshot.params['id'])
     }
 
     getPlatformClass(platform: string): string 
@@ -116,5 +139,70 @@ export class GameComponent
         {
           return 'orange-overlay';
         }
+    }
+
+    addLike(user_id : any)
+    {
+      const game_id = this.route.snapshot.params['id'];
+
+      if(user_id && game_id)
+      {
+        this.webService.addLike(game_id, user_id).subscribe({
+          next: (response : any) =>
+          {
+            console.log(response)
+            this.getLikesDislikes(game_id);
+          },
+          error: (error) =>
+          {
+            console.error('Something went wrong adding like:', error);
+          }}
+        );
+      }
+      else
+      {
+        console.log("Looks like some IDs are missing!")
+      }
+    }
+
+    addDislike(user_id : any)
+    {
+      const game_id = this.route.snapshot.params['id'];
+
+      if(user_id && game_id)
+      {
+        this.webService.addDislike(game_id, user_id).subscribe({
+          next: (response : any) =>
+          {
+            console.log(response)
+            this.getLikesDislikes(game_id);
+          },
+          error: (error) =>
+          {
+            console.error('Something went wrong adding dislike:', error);
+          }}
+        );
+      }
+      else
+      {
+        console.log("Looks like some IDs are missing!")
+      }
+    }
+
+    getLikesDislikes(game_id : any)
+    {
+      this.webService.getLikesDislikesFromGame(game_id).subscribe({
+        next: (response : any) =>
+        {
+          const likes = response.likes_dislikes.liked_users.length;
+          const dislikes = response.likes_dislikes.disliked_users.length;
+          this.like_count = likes
+          this.dislike_count = dislikes
+        },
+        error: (error) =>
+        {
+          console.error('Something went wrong when getting likes and dislikes:', error);
+        }}
+      );
     }
 }

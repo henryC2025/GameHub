@@ -81,7 +81,7 @@ export class SharedService
         }
         else 
         {
-            return ''; // Default class or empty string
+            return '';
         }
     }
 }

@@ -54,18 +54,28 @@
     </div>
 
     <!-- Like and dislike contianer -->
+
+    <ng-template #loggedOutLikeDislike>
+        <h2 id="logout-comment">Log in to like or dislike a game</h2>
+    </ng-template>
+
+    <ng-container *ngIf="authService.isAuthenticated$ | async; else loggedOutLikeDislike">
+    </ng-container>
+
+    <div *ngFor = "let game of game_list | async">
     <div class="like-dislike-container">
-        <button class="like-button">
-          <i class="fas fa-thumbs-up fa-2x"></i>
+        <button class="like-button" (click)="addLike(user_id)">
+          <i id="thumbs-up" class="fas fa-thumbs-up fa-2x"></i>
         </button>
-        <span class="like-dislike-count">{{ 2 }}</span>
+        <span class="like-dislike-count">{{ like_count }}</span>
         
         <div class="divider"></div> <!-- Add a divider here -->
       
-        <button class="dislike-button">
-          <i class="fas fa-thumbs-down fa-2x"></i>
+        <button class="dislike-button" (click)="addDislike(user_id)">
+          <i id="thumbs-down" class="fas fa-thumbs-down fa-2x"></i>
         </button>
-        <span class="like-dislike-count">{{ 2 }}</span>
+        <span class="like-dislike-count">{{ dislike_count }}</span>
+    </div>
     </div>
 
 <div class="comments-container mb-3 mt-3">

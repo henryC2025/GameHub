@@ -1,16 +1,10 @@
-<!-- <ng-container>
-
-    <uL *ngIf = "authService.user$ | async as user">
-        <li>Name: {{user.name}}</li>
-        <li>Email: {{user.email}}</li>
-    </uL>
-
-</ng-container> -->
-
-
-<div>
-    
-    <h1 style="color: black; font-size: x-large; margin-top: 50px;">TESTING</h1>
-    <h2>HOME</h2>
-
+<div id="home-body" style="margin-top: 50px;">
+    <div class="container" id="home-container">
+      <img src="assets/cyborg-face-white-nb.png" 
+           style="width: 100px; height: 100px; cursor: pointer;" id="home-icon"
+           [routerLink]="['/games']">
+      <hr>
+      <h1 id="home-heading">Welcome to the Game Hub</h1>
+    </div>
 </div>
+

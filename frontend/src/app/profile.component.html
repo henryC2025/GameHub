@@ -1,22 +1,22 @@
 <div class="container" style="margin-top: 10%;">
 
     <div>
-
-        <H1>User Profile</H1>
+        <H1 id="profile-heading">User Profile</H1>
         <hr>
 
-        <div *ngIf="authService.user$ | async as user">
-            <h3 id="profile-nickname">Username - {{ user.nickname }}</h3>
-            <h3 id="profile-sub">AuthID - {{ user.sub }}</h3>
-            <h3 id="profile-userid">UserID - {{ this.sharedService.getUserId() }}</h3>
-            <h3 id="profile-email">Email - {{ user.email }}</h3>
+        <div *ngIf="authService.user$ | async as user" id="profile-details">
+            <h3 id="profile-text">USERNAME - {{ user.nickname }}</h3>
+            <hr>
+            <h3 id="profile-text">AUTHID - {{ user.sub }}</h3>
+            <hr>
+            <h3 id="profile-text">USERID - {{ this.sharedService.getUserId() }}</h3>
+            <hr>
+            <h3 id="profile-text">EMAIL - {{ user.email }}</h3>
         </div>
-
     </div>
 
     <div>
-
-        <H1>Comments</H1>
+        <H1 id="profile-heading">Comments</H1>
         <hr>
 
         <div *ngIf="isAuthenticated"> 
@@ -26,7 +26,7 @@
                   <div class="card-body" id="card-body">
                     
                     <div class="row">
-                        <!-- Display comment details here -->
+
                         <div class="col-md-4" id="comment-details">
                             <p id="comment-date" class="text-white">{{ comment.datetime }}</p>
                         </div>
@@ -35,8 +35,6 @@
                             <p id="comment-text" class="text-white">{{ comment.comment_text }}</p>
                         </div>
                         
-                        <!-- (click)="editComment(comment._comment_id)" -->
-                        <!-- Delete button -->
                     </div>
     
                   </div>
@@ -63,38 +61,108 @@
                     </div>
                 </div>
                 </div>
-              </div>
+            </div>
               
-        </div>
+            <!-- Likes and dislikes -->
+            <div>
+                <H1 id="profile-heading">Likes</H1>
+                <hr>
 
-        </div>
+                <ng-template #noLikes>
+                    <h2 id="like-dislike-template-message">No games liked</h2>
+                </ng-template>
 
-    <div>
+                <div *ngIf="user_likes.length > 0; else noLikes">
 
-        <H1>Likes</H1>
-        <hr>
+                    <div *ngFor="let gameId of user_likes">
 
-        <div *ngIf="authService.user$ | async as user">
-            <h3 id="profile-nickname">Username - {{ user.nickname }}</h3>
-            <h3 id="profile-sub">AuthID - {{ user.sub }}</h3>
-            <h3 id="profile-userid">UserID - {{ this.sharedService.getUserId() }}</h3>
-            <h3 id="profile-email">Email - {{ user.email }}</h3>
-        </div>
+                        <div class="card mt-3">
+                            <div class="card-body" id="card-body-like">
+                              
+                              <div class="row">
 
-    </div>
-
-    <div>
-
-        <H1>Dislikes</H1>
+                                  <div class="col-md-8">
+                                    <p id="liked-game-name">{{getUserLikesGamesInfo(gameId)}}</p>
+                                  </div>          
         
+                              </div>
+              
+                            </div>
+                            <div class="card-footer" style="background-color: rgba(73, 0, 205, 0.7);">
+                              <div class="row">
+              
+                                  <div class="d-flex gap-2">
+                                      <button class="btn btn-danger" id="like-edit"
+                                          (click)="deleteUserLike(gameId, user_id)">
+                                          <i class="fas fa-trash"></i> Remove
+                                      </button>
+                                  
+                                      <button class="btn btn-info" id="like-game" 
+                                        style="cursor: pointer;"
+                                        [routerLink]="['/games', gameId]">
+                                          <i class="fas fa-gamepad"></i> Go To Game
+                                      </button>
+                                  </div>                    
+                              
+                              </div>
+                          </div>
+                        </div>
 
-        <div *ngIf="authService.user$ | async as user">
-            <h3 id="profile-nickname">Username - {{ user.nickname }}</h3>
-            <h3 id="profile-sub">AuthID - {{ user.sub }}</h3>
-            <h3 id="profile-userid">UserID - {{ this.sharedService.getUserId() }}</h3>
-            <h3 id="profile-email">Email - {{ user.email }}</h3>
+                    </div>
+                </div>
+
+            </div>
+
+        
+            <div>
+                <H1 id="profile-heading">Dislikes</H1>
+                <hr>
+
+                <ng-template #noDislikes>
+                    <h3 id="like-dislike-template-message">No games disliked</h3>
+                </ng-template>
+                
+                <div *ngIf="user_dislikes.length > 0; else noDislikes">
+
+                    <div *ngFor="let gameId of user_dislikes">
+                        
+                        <div class="card mt-3">
+                            <div class="card-body" id="card-body-dislike">
+                              
+                              <div class="row">
+            
+                                  <div class="col-md-8">
+                                    <p id="disliked-game-name">{{getUserDislikesGamesInfo(gameId)}}</p>
+                                  </div>
+
+                              </div>
+              
+                            </div>
+                            <div class="card-footer" style="background-color: rgba(73, 0, 205, 0.7);">
+                              <div class="row">
+              
+                                  <div class="d-flex gap-2">
+                                      <button class="btn btn-danger" id="dislike-delete"
+                                          (click)="deleteUserDislike(gameId, user_id)">
+                                          <i class="fas fa-trash"></i> Remove
+                                      </button>
+                                  
+                                      <button class="btn btn-info" id="dislike-game" 
+                                        style="cursor: pointer;"
+                                        [routerLink]="['/games', gameId]">
+                                          <i class="fas fa-gamepad"></i> Go To Game
+                                      </button>
+                                  </div>                    
+                              
+                              </div>
+                          </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
         </div>
-
     </div>
-
 </div>

@@ -212,7 +212,7 @@ def add_comment(game_id):
             {'$push': {'comments': new_comment}}
         )
 
-        return make_response(jsonify({'message': 'Comment added successfully'}), 201)
+        return make_response(jsonify({'message': 'Comment added successfully'}, {'comment_id' : str(comment_id)}), 201)
     else:
         return make_response(jsonify({'error_message': 'Comment could not be added'}), 404)
     
@@ -236,7 +236,6 @@ def edit_comment(game_id, comment_id):
 
     if game:
         for comment in game.get('comments', []):
-            # and comment['username'] == request.form['username']
             if str(comment['_comment_id']) == comment_id:
                 comment['comment_text'] = request.form['comment']
                 comment['datetime'] = datetime.datetime.utcnow()
@@ -247,7 +246,7 @@ def edit_comment(game_id, comment_id):
                     
                 return make_response(jsonify({'url': new_comment_link}), 200)
             else:
-                return make_response(jsonify({'error_message': 'Comment not found or user mismatch'}), 404)
+                return make_response(jsonify({'error_message': 'Comment not found for game'}), 404)
     else:
         return make_response(jsonify({'error_message': 'Game ID not found'}), 404)
 
@@ -287,16 +286,18 @@ def get_game_comments(game_id):
 def get_user_comments(user_id):
     games = collection.find({'comments.user_id': user_id})
 
-    all_user_comments = []
-    for game in games:
-        game_id = str(game['_id'])
-        comments = game.get('comments')
-        for comment in comments:
-            comment['_comment_id'] = str(comment['_comment_id'])
-            comment['game_id'] = game_id
-            all_user_comments.append(comment)
-
-    return make_response(jsonify(all_user_comments), 200)
+    if games:
+        all_user_comments = []
+        for game in games:
+            game_id = str(game['_id'])
+            comments = game.get('comments')
+            for comment in comments:
+                comment['_comment_id'] = str(comment['_comment_id'])
+                comment['game_id'] = game_id
+                all_user_comments.append(comment)
+        return make_response(jsonify(all_user_comments), 200)
+    else:
+        return make_response(jsonify({'error_message': 'Game not found'}), 404)
 
 # Add like to a game
 @app.route('/api/v1.0/games/<string:game_id>/likes_dislikes/likes', methods=['POST'])
@@ -305,7 +306,7 @@ def add_like(game_id):
     game = collection.find_one({'_id' : ObjectId(game_id)})
 
     if game:
-        user_id = request.form.get('user_id')
+        user_id = str.lower(request.form.get('user_id'))
 
         if user_id:
             if user_id in game['likes_dislikes']['user_likes']:
@@ -313,7 +314,8 @@ def add_like(game_id):
                 action = 'user removed from game likes'
             elif user_id in game['likes_dislikes']['user_dislikes']:
                 game['likes_dislikes']['user_dislikes'].remove(user_id)
-                action = 'user removed from game dislikes'
+                game['likes_dislikes']['user_likes'].append(user_id)
+                action = 'user ID removed from dislikes and added to game likes'
             else:
                 game['likes_dislikes']['user_likes'].append(user_id)
                 action = 'user ID added to game likes'
@@ -328,12 +330,12 @@ def add_like(game_id):
 
 # Add a dislike to a game
 @app.route('/api/v1.0/games/<string:game_id>/likes_dislikes/dislikes', methods=['POST'])
-def dislike_like(game_id):
+def add_dislike(game_id):
 
     game = collection.find_one({'_id': ObjectId(game_id)})
 
     if game:
-        user_id = request.form.get('user_id')
+        user_id = str.lower(request.form.get('user_id'))
 
         if user_id:
             if user_id in game['likes_dislikes']['user_dislikes']:
@@ -341,7 +343,8 @@ def dislike_like(game_id):
                 action = 'user removed from game dislikes'
             elif user_id in game['likes_dislikes']['user_likes']:
                 game['likes_dislikes']['user_likes'].remove(user_id)
-                action = 'user removed from game likes'
+                game['likes_dislikes']['user_dislikes'].append(user_id)
+                action = 'user ID removed from likes and added to game dislike'
             else:
                 game['likes_dislikes']['user_dislikes'].append(user_id)
                 action = 'user ID added to game dislike'
@@ -359,70 +362,77 @@ def dislike_like(game_id):
 def get_game_likes_dislikes(game_id):
     game = collection.find_one({'_id' : ObjectId(game_id)})
 
+    like_users = []
+    dislike_users = []
+
     if game:
         likes_dislikes = game.get('likes_dislikes', {})
 
         for user_id in likes_dislikes.get('user_likes', []):
-            likes_dislikes['user_likes'] = str(user_id)
+            like_users.append(str(user_id))
 
         for user_id in likes_dislikes.get('user_dislikes', []):
-            likes_dislikes['user_dislikes'] = str(user_id)
+            dislike_users.append(str(user_id))
+
+        likes_dislikes = {'liked_users': like_users, 'disliked_users': dislike_users}
 
         return make_response(jsonify({'likes_dislikes' : likes_dislikes}))
     
     return make_response(jsonify({'error_message' : 'game not found'}), 404)
 
-# Get like and dislikes from a user 
+# Get games liked and disliked from a user 
 @app.route('/api/v1.0/users/<string:user_id>/likes_dislikes', methods=['GET'])
 def get_likes_dislikes_for_user(user_id):
-
     games_liked = []
     games_disliked = []
 
-    games = collection.find({"likes_dislikes.user_likes": user_id})
+    games_liked_cursor = collection.find({"likes_dislikes.user_likes": user_id})
+    for game_liked in games_liked_cursor:
+        games_liked.append(str(game_liked['_id']))
 
-    for game in games:
-        games_liked.append(str(game['_id']))
-
-    games = collection.find({"likes_dislikes.user_dislikes": user_id})
-
-    for game in games:
-        games_disliked.append(str(game['_id']))
+    games_disliked_cursor = collection.find({"likes_dislikes.user_dislikes": user_id})
+    for game_disliked in games_disliked_cursor:
+        games_disliked.append(str(game_disliked['_id']))
 
     likes_dislikes = {'games_user_likes': games_liked, 'games_user_dislikes': games_disliked}
 
-    return make_response(jsonify({'games_likes_dislikes': likes_dislikes}), 200)
+    return make_response(jsonify([likes_dislikes]), 200)
 
+# Remove a like
+@app.route('/api/v1.0/games/<string:game_id>/likes_dislikes/likes', methods=['DELETE'])
+def remove_like(game_id):
 
-# FAVOURITE GAMES {GAME_ID}
+    game = collection.find_one({'_id': ObjectId(game_id)})
 
-# ADD FAVOURITE GAMES
+    if game:
+        user_id = str.lower(request.args.get('user_id'))
 
-# DELETE FAVOURITE GAMES
+        if user_id in game['likes_dislikes']['user_likes']:
+            game['likes_dislikes']['user_likes'].remove(user_id)
+            collection.update_one({'_id': ObjectId(game_id)}, {'$set': {'likes_dislikes': game['likes_dislikes']}})
+            return make_response(jsonify({'message': 'User removed from the likes list'}), 200)
+        else:
+            return make_response(jsonify({'error_message': 'User not found in the like list'}), 404)
+    else:
+        return make_response(jsonify({'error_message': 'Game not found'}), 404)
 
-# EDIT FAVOURITE GAMES
+# Remove a dislike
+@app.route('/api/v1.0/games/<string:game_id>/likes_dislikes/dislikes', methods=['DELETE'])
+def remove_dislike(game_id):
 
-# ADD FILTERS FOR VIEW ALL GAMES
+    game = collection.find_one({'_id': ObjectId(game_id)})
+
+    if game:
+        user_id = str.lower(request.args.get('user_id'))
+
+        if user_id in game['likes_dislikes']['user_dislikes']:
+            game['likes_dislikes']['user_dislikes'].remove(user_id)
+            collection.update_one({'_id': ObjectId(game_id)}, {'$set': {'likes_dislikes': game['likes_dislikes']}})
+            return make_response(jsonify({'message': 'User removed from the dislike list'}), 200)
+        else:
+            return make_response(jsonify({'error_message': 'User not found in the dislike list'}), 404)
+    else:
+        return make_response(jsonify({'error_message': 'Game not found'}), 404)
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-
-# BLACKLIST COLLECTION 
-
-
-# USERS COLLECTION
-
-# user_list = [
-#           { 
-#             'name' : 'Henry Chan',
-#             'username' : 'henry2025',  
-#             'password' : b'apple123',
-#             'email' : 'herny2025@msn.com',
-#             'admin' : True
-#           }
-#        ]
-
-# for new_staff_user in user_list:
-#       new_staff_user['password'] = bcrypt.hashpw(new_staff_user['password'], bcrypt.gensalt())
-#       user_list.insert_one(new_staff_user)

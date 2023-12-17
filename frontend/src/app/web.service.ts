@@ -1,11 +1,13 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { Observable, forkJoin } from "rxjs";
 
 @Injectable()
 export class WebService 
 {
     game_list : any;
     private game_id : any;
+    private user_id : any;
     private comment_id : any;
     private comment_text : any;
     private query : any;
@@ -44,6 +46,12 @@ export class WebService
         );
     }
 
+    getGamesByIds(ids : any[])
+    {
+        const requests = ids.map((id) => this.getGame(id));
+        return forkJoin(requests);
+    }
+
     searchGame(query : any)
     {
         this.query = query
@@ -79,13 +87,16 @@ export class WebService
         return this.http.post('http://localhost:5000/api/v1.0/games/' + this.game_id + '/comments', addCommentData);
     }
 
-    editComment(gameID : any, commentID : any, edit_text : any)
+    editComment(gameID : any, commentID : any, comment_text : any)
     {
         this.game_id = gameID;
         this.comment_id = commentID;
 
+        let postData = new FormData();
+        postData.append("comment", comment_text.comment);
+
         return this.http.put(
-            'http://localhost:5000/api/v1.0/games/' + this.game_id + '/comments/' + this.comment_id, edit_text
+            'http://localhost:5000/api/v1.0/games/' + this.game_id + '/comments/' + this.comment_id, postData
         )
     }
 
@@ -99,13 +110,60 @@ export class WebService
         )
     }
 
-    addLike(id : any)
+    addLike(game_id : any, user_id : any)
     {
+        this.game_id = game_id;
+        let postData = new FormData();
+        postData.append("user_id", user_id);
 
+        return this.http.post(
+            'http://localhost:5000/api/v1.0/games/' + this.game_id + '/likes_dislikes/likes', postData
+        );
     }
 
-    addDislike(id : any)
+    addDislike(game_id : any, user_id : any)
     {
+        this.game_id = game_id;
+        let postData = new FormData();
+        postData.append("user_id", user_id);
 
+        return this.http.post(
+            'http://localhost:5000/api/v1.0/games/' + this.game_id + '/likes_dislikes/dislikes', postData
+        );
+    }
+
+    getLikesDislikesFromGame(id : any)
+    {
+        this.game_id = id;
+        return this.http.get(
+            'http://localhost:5000/api/v1.0/games/' + this.game_id + '/likes_dislikes'
+        )
+    }
+
+    getLikesDislikesFromUser(id : any)
+    {
+        this.user_id = id;
+
+        return this.http.get(
+            'http://localhost:5000/api/v1.0/users/' + this.user_id + '/likes_dislikes'
+        )
+    }
+
+    removeUserLikeFromGame(game_id : any, user_id : any)
+    {
+        this.game_id = game_id;
+        this.user_id = user_id;
+
+        return this.http.delete(
+            'http://localhost:5000/api/v1.0/games/' + this.game_id + '/likes_dislikes/likes?user_id=' + this.user_id)
+    }
+
+    removeUserDislikeFromGame(game_id : any, user_id : any)
+    {
+        this.game_id = game_id;
+        this.user_id = user_id;
+
+        return this.http.delete(
+            'http://localhost:5000/api/v1.0/games/' + this.game_id + '/likes_dislikes/dislikes?user_id=' + this.user_id)
     }
 }
